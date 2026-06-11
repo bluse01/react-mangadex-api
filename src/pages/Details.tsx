@@ -27,6 +27,20 @@ interface MangaItem {
   };
 }
 
+function RenderCover({ manga }: { manga: MangaItem }) {
+  const coverArt = manga?.relationships?.find(
+    (rel) => rel.type === "cover_art",
+  );
+  const fileName = coverArt?.attributes?.fileName;
+  const fallbackCover = "https://w.wallhaven.cc/full/21/wallhaven-2139jy.jpg";
+
+  const imgSrc = fileName
+    ? `https://uploads.mangadex.org/covers/${manga.id}/${fileName}`
+    : fallbackCover;
+
+  return <img src={imgSrc} alt="cover_art" />;
+}
+
 export default function Details() {
   const [mangaFeed, setMangaFeed] = useState([]);
   const [mangaInfo, setMangaInfo] = useState<MangaItem>();
@@ -49,6 +63,9 @@ export default function Details() {
           `https://api.mangadex.org/manga/${id}`,
           {
             timeout: 5000,
+            params: {
+              includes: ["cover_art", "tag"],
+            },
             signal: controller.signal,
           },
         );
@@ -84,7 +101,7 @@ export default function Details() {
   }, [id]);
 
   console.log(mangaFeed);
-  console.log(mangaInfo?.attributes?.title);
+  console.log(mangaInfo);
 
   return (
     <div className="container">
@@ -92,6 +109,10 @@ export default function Details() {
 
       {isLoading ? <LoadingState /> : null}
       {error ? <ErrorState error={error} /> : null}
+
+      <div className="head-content-wrapper">
+        {mangaInfo ? <RenderCover manga={mangaInfo} /> : null}
+      </div>
 
       {!isLoading && mangaInfo && Object.keys(mangaInfo).length === 0 && (
         <RenderEmptyState />
