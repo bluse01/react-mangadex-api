@@ -5,6 +5,11 @@ import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import MangaList from "../components/MangaList";
 
+// state imports
+import LoadingState from "../components/states/LoadingState";
+import RenderEmptyState from "../components/states/EmptyState";
+import ErrorState from "../components/states/ErrorState";
+
 interface Relationships {
   id: string;
   type: string;
@@ -21,34 +26,6 @@ interface MangaItem {
       [key: string]: string;
     };
   };
-}
-
-function LoadingElements() {
-  return (
-    <div className="loading-container">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  );
-}
-
-function RenderEmptyState() {
-  return (
-    <div className="empty-state">
-      <i className="fa-solid fa-cloud-showers-heavy"></i>
-      <p>search result return empty</p>
-    </div>
-  );
-}
-
-function RenderError({ error }: { error: string }) {
-  return (
-    <div className="error">
-      <i className="fa-solid fa-circle-exclamation"></i>
-      <p>{error}</p>
-    </div>
-  );
 }
 
 export default function Home() {
@@ -106,8 +83,8 @@ export default function Home() {
 
       <SearchBar onSearch={handleSearch} />
 
-      {isLoading ? <LoadingElements /> : null}
-      {error ? <RenderError error={error} /> : null}
+      {isLoading ? <LoadingState /> : null}
+      {error ? <ErrorState error={error} /> : null}
 
       <MangaList isLoading={isLoading} error={error} mangaID={mangaID} />
 
