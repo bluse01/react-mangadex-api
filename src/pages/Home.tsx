@@ -71,14 +71,12 @@ export default function Home() {
       setError(null);
 
       try {
-        const response = await axios({
-          method: "GET",
-          url: `${baseUrl}/manga`,
+        const response = await axios.get(`${baseUrl}/manga`, {
+          timeout: 5000,
           params: {
             title: title,
             "includes[]": "cover_art",
           },
-
           signal: controller.signal,
         });
 

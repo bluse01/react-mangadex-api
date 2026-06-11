@@ -1,9 +1,30 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+import Header from "../components/Header";
+
+interface Relationships {
+  id: string;
+  type: string;
+  attributes?: {
+    fileName: string;
+  };
+}
+
+interface MangaItem {
+  id: string;
+  relationships?: Relationships[];
+  attributes?: {
+    title: {
+      [key: string]: string;
+    };
+  };
+}
 
 export default function Details() {
   const [mangaFeed, setMangaFeed] = useState([]);
+  const [mangaInfo, setMangaInfo] = useState<MangaItem>();
 
   const baseUrl = "https://api.mangadex.org";
 
@@ -12,16 +33,24 @@ export default function Details() {
   useEffect(() => {
     async function fetchFeed() {
       try {
-        const response = await axios({
-          method: "GET",
-          url: `${baseUrl}/manga/${id}/feed`,
+        const titleResponse = await axios.get(
+          `https://api.mangadex.org/manga/${id}`,
+          {
+            timeout: 5000,
+          },
+        );
+
+        const feedResponse = await axios.get(`${baseUrl}/manga/${id}/feed`, {
+          timeout: 5000,
           params: {
-            translatedLanguage: ["en"],
+            "translatedLanguage[]": "en",
             limit: 10,
+            order: { chapter: "asc" },
           },
         });
-        console.log(response.data.data);
-        setMangaFeed(response.data.data);
+
+        setMangaFeed(feedResponse.data.data);
+        setMangaInfo(titleResponse.data.data);
       } catch {
         console.log("fetchFeed error");
       }
@@ -30,9 +59,8 @@ export default function Details() {
     fetchFeed();
   }, [id]);
 
-  return (
-    <Link to="/" style={{ color: "var(--blush-rose)", textDecoration: "none" }}>
-      <i className="fa-solid fa-arrow-left"></i> Back to Search
-    </Link>
-  );
+  console.log(mangaFeed);
+  console.log(mangaInfo?.attributes?.title);
+
+  return <Header />;
 }
