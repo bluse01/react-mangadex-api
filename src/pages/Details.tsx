@@ -24,6 +24,8 @@ interface MangaItem {
     title: {
       [key: string]: string;
     };
+    contentRating: string;
+    status: string;
   };
 }
 
@@ -104,14 +106,27 @@ export default function Details() {
   console.log(mangaInfo);
 
   return (
-    <div className="container">
+    <div className="container ">
       <Header />
 
       {isLoading ? <LoadingState /> : null}
       {error ? <ErrorState error={error} /> : null}
 
-      <div className="head-content-wrapper">
+      <div className="head-content-container">
         {mangaInfo ? <RenderCover manga={mangaInfo} /> : null}
+        <div className="manga-details">
+          <h2>
+            {mangaInfo?.attributes?.title
+              ? Object.values(mangaInfo?.attributes?.title)[0]
+              : "untitled"}
+          </h2>
+          <div className="manga-details-small">
+            <p className="content-rating">
+              {mangaInfo?.attributes?.contentRating}
+            </p>
+            <p className="status">{mangaInfo?.attributes?.status}</p>
+          </div>
+        </div>
       </div>
 
       {!isLoading && mangaInfo && Object.keys(mangaInfo).length === 0 && (
