@@ -39,6 +39,15 @@ interface MangaItem {
   };
 }
 
+interface ChapterInt {
+  id: string;
+  attributes: {
+    chapter: string;
+    publishAt: string;
+    title: string | null;
+  };
+}
+
 function RenderCover({ manga }: { manga: MangaItem }) {
   const coverArt = manga?.relationships?.find(
     (rel) => rel.type === "cover_art",
@@ -66,8 +75,20 @@ function RenderTags({ mangaTags }: { mangaTags: Tags[] }) {
   );
 }
 
+function RenderChapters({ chapterArray }: { chapterArray: ChapterInt[] }) {
+  return chapterArray.map((chapter) => {
+    return (
+      <div className="chapter-block" key={chapter.id}>
+        <p>{chapter.attributes.chapter}</p>
+        <p>{chapter.attributes.title}</p>
+        <p>{chapter.attributes.publishAt}</p>
+      </div>
+    );
+  });
+}
+
 export default function Details() {
-  const [mangaFeed, setMangaFeed] = useState([]);
+  const [mangaFeed, setMangaFeed] = useState<ChapterInt[] | null>(null);
   const [mangaInfo, setMangaInfo] = useState<MangaItem>();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -135,24 +156,30 @@ export default function Details() {
       {isLoading ? <LoadingState /> : null}
       {error ? <ErrorState error={error} /> : null}
 
-      <div className="head-content-container">
-        {mangaInfo ? <RenderCover manga={mangaInfo} /> : null}
-        <div className="manga-details">
-          <h2>
-            {mangaInfo?.attributes?.title
-              ? Object.values(mangaInfo?.attributes?.title)[0]
-              : "untitled"}
-          </h2>
-          <div className="manga-details-small">
-            <p className="content-rating">
-              {mangaInfo?.attributes?.contentRating}
-            </p>
-            <p className="status">{mangaInfo?.attributes?.status}</p>
-          </div>
-          <div className="manga-tags-wrapper">
-            <RenderTags mangaTags={mangaInfo?.attributes?.tags ?? []} />
+      <div className="main-content-container">
+        <div className="head-content-container">
+          {mangaInfo ? <RenderCover manga={mangaInfo} /> : null}
+          <div className="manga-details">
+            <h2>
+              {mangaInfo?.attributes?.title
+                ? Object.values(mangaInfo?.attributes?.title)[0]
+                : "untitled"}
+            </h2>
+            <div className="manga-details-small">
+              <p className="content-rating">
+                {mangaInfo?.attributes?.contentRating}
+              </p>
+              <p className="status">{mangaInfo?.attributes?.status}</p>
+            </div>
+            <div className="manga-tags-wrapper">
+              <RenderTags mangaTags={mangaInfo?.attributes?.tags ?? []} />
+            </div>
           </div>
         </div>
+
+        <section className="chapter-feed-container">
+          <RenderChapters chapterArray={mangaFeed ?? []} />
+        </section>
       </div>
 
       {!isLoading && mangaInfo && Object.keys(mangaInfo).length === 0 && (

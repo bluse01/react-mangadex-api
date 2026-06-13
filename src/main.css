@@ -238,8 +238,11 @@ header p {
 
 /* Details css */
 
-.head-content-container {
+.main-content-container {
   padding: 0 10%;
+}
+
+.head-content-container {
   display: flex;
   flex-direction: row;
   gap: 20px;
