@@ -251,13 +251,19 @@ header p {
 
 .manga-details h2 {
   color: var(--alabaster-grey);
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  max-height: 100px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .manga-details-small {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .manga-details-small p {
@@ -266,7 +272,7 @@ header p {
   background-color: var(--iron-grey);
   width: fit-content;
   border-radius: 5px;
-  padding: 2px 5px;
+  padding: 3px 7px;
 }
 
 /* animations */
@@ -304,7 +310,7 @@ header p {
     grid-template-columns: 1fr;
   }
 
-  img {
+  .manga-card img {
     height: 500px;
   }
 }
