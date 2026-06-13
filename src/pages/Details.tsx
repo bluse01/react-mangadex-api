@@ -77,11 +77,14 @@ function RenderTags({ mangaTags }: { mangaTags: Tags[] }) {
 
 function RenderChapters({ chapterArray }: { chapterArray: ChapterInt[] }) {
   return chapterArray.map((chapter) => {
+    const dateObj = new Date(chapter.attributes.publishAt);
+    const readableDate = dateObj.toLocaleDateString();
+
     return (
       <div className="chapter-block" key={chapter.id}>
         <p>{chapter.attributes.chapter}</p>
         <p>{chapter.attributes.title}</p>
-        <p>{chapter.attributes.publishAt}</p>
+        <p>{readableDate}</p>
       </div>
     );
   });
