@@ -17,6 +17,15 @@ interface Relationships {
   };
 }
 
+interface Tags {
+  attributes?: {
+    name: {
+      [key: string]: string;
+    };
+  };
+  id: string;
+}
+
 interface MangaItem {
   id: string;
   relationships?: Relationships[];
@@ -26,6 +35,7 @@ interface MangaItem {
     };
     contentRating: string;
     status: string;
+    tags: Tags[];
   };
 }
 
@@ -41,6 +51,19 @@ function RenderCover({ manga }: { manga: MangaItem }) {
     : fallbackCover;
 
   return <img src={imgSrc} alt="cover_art" />;
+}
+
+function RenderTags({ mangaTags }: { mangaTags: Tags[] }) {
+  return (
+    <div className="manga-tags">
+      tags:
+      {mangaTags.map((tag) => {
+        return tag.attributes?.name ? (
+          <p key={tag.id}>{Object.values(tag.attributes?.name)[0]}</p>
+        ) : null;
+      })}
+    </div>
+  );
 }
 
 export default function Details() {
@@ -125,6 +148,9 @@ export default function Details() {
               {mangaInfo?.attributes?.contentRating}
             </p>
             <p className="status">{mangaInfo?.attributes?.status}</p>
+          </div>
+          <div className="manga-tags-wrapper">
+            <RenderTags mangaTags={mangaInfo?.attributes?.tags ?? []} />
           </div>
         </div>
       </div>

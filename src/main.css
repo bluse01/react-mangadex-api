@@ -247,6 +247,7 @@ header p {
 
 .head-content-container img {
   width: 235px;
+  border-radius: 5px;
 }
 
 .manga-details h2 {
@@ -264,6 +265,7 @@ header p {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  margin-bottom: 30px;
 }
 
 .manga-details-small p {
@@ -273,6 +275,14 @@ header p {
   width: fit-content;
   border-radius: 5px;
   padding: 3px 7px;
+}
+
+.manga-tags {
+  color: var(--alabaster-grey);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* animations */
