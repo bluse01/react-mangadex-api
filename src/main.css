@@ -288,6 +288,16 @@ header p {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.head-content-container h3 {
+  color: var(--blush-rose);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 6;
+  -webkit-line-clamp: 6;
+  overflow: hidden;
 }
 
 .chapter-feed-container {

@@ -36,6 +36,9 @@ interface MangaItem {
     contentRating: string;
     status: string;
     tags: Tags[];
+    description: {
+      [key: string]: string;
+    };
   };
 }
 
@@ -73,6 +76,13 @@ function RenderTags({ mangaTags }: { mangaTags: Tags[] }) {
       })}
     </div>
   );
+}
+
+function RenderDescription({ manga }: { manga: MangaItem }) {
+  const description = manga.attributes?.description["en"]
+    ? manga.attributes?.description["en"]
+    : Object.values(manga.attributes?.description ?? {})[0];
+  return <h3>{description}</h3>;
 }
 
 function RenderChapters({ chapterArray }: { chapterArray: ChapterInt[] }) {
@@ -177,6 +187,7 @@ export default function Details() {
             <div className="manga-tags-wrapper">
               <RenderTags mangaTags={mangaInfo?.attributes?.tags ?? []} />
             </div>
+            {mangaInfo ? <RenderDescription manga={mangaInfo} /> : null}
           </div>
         </div>
 
