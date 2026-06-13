@@ -246,6 +246,7 @@ header p {
   display: flex;
   flex-direction: row;
   gap: 20px;
+  margin-bottom: 50px;
 }
 
 .head-content-container img {
@@ -286,6 +287,31 @@ header p {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chapter-feed-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chapter-block {
+  display: flex;
+  justify-content: space-between;
+  color: var(--bright-snow);
+  background-color: var(--iron-grey);
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.chapter-block:hover {
+  background-color: hsl(210, 9%, 27%);
+}
+
+.chapter-block:active {
+  background-color: hsl(210, 9%, 25%);
 }
 
 /* animations */
