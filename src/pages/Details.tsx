@@ -42,6 +42,10 @@ interface MangaItem {
   };
 }
 
+interface ChapterResp {
+  data: ChapterInt[];
+  total: number;
+}
 interface ChapterInt {
   id: string;
   attributes: {
@@ -85,8 +89,8 @@ function RenderDescription({ manga }: { manga: MangaItem }) {
   return <h3>{description}</h3>;
 }
 
-function RenderChapters({ chapterArray }: { chapterArray: ChapterInt[] }) {
-  return chapterArray.map((chapter) => {
+function RenderChapters({ chapterArray }: { chapterArray: ChapterResp }) {
+  return chapterArray.data.map((chapter) => {
     const dateObj = new Date(chapter.attributes.publishAt);
     const readableDate = dateObj.toLocaleDateString();
 
@@ -101,7 +105,7 @@ function RenderChapters({ chapterArray }: { chapterArray: ChapterInt[] }) {
 }
 
 export default function Details() {
-  const [mangaFeed, setMangaFeed] = useState<ChapterInt[] | null>(null);
+  const [mangaFeed, setMangaFeed] = useState<ChapterResp>();
   const [mangaInfo, setMangaInfo] = useState<MangaItem>();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -133,17 +137,16 @@ export default function Details() {
           timeout: 5000,
           params: {
             "translatedLanguage[]": "en",
-            limit: 10,
             order: { chapter: "asc" },
           },
           signal: controller.signal,
         });
 
-        setMangaFeed(feedResponse.data.data);
+        setMangaFeed(feedResponse.data);
         setMangaInfo(titleResponse.data.data);
       } catch (err) {
         if (axios.isCancel(err)) {
-          console.log("Request canceled because user typed something new!");
+          console.log("Request canceled because user clicked something new!");
         } else {
           setError("Failed to fetch mangas. Please try again.");
         }
@@ -192,7 +195,7 @@ export default function Details() {
         </div>
 
         <section className="chapter-feed-container">
-          <RenderChapters chapterArray={mangaFeed ?? []} />
+          {mangaFeed ? <RenderChapters chapterArray={mangaFeed} /> : null}
         </section>
       </div>
 
