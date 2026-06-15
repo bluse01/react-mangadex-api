@@ -90,18 +90,35 @@ function RenderDescription({ manga }: { manga: MangaItem }) {
 }
 
 function RenderChapters({ chapterArray }: { chapterArray: ChapterResp }) {
-  return chapterArray.data.map((chapter) => {
-    const dateObj = new Date(chapter.attributes.publishAt);
-    const readableDate = dateObj.toLocaleDateString();
+  // page Chapter Target, meaing how many chapters should be in a page, this is importent so we know how many pages we need to create
+  // so if we have a target = 10 and have total chapters of 43 it will create a total of 5 pages
+  const pageChpTarget = 10;
+  const totalPages = Math.ceil(chapterArray.total / pageChpTarget);
 
-    return (
-      <div className="chapter-block" key={chapter.id}>
-        <p>{chapter.attributes.chapter}</p>
-        <p>{chapter.attributes.title}</p>
-        <p>{readableDate}</p>
+  return (
+    <div className="chapter-page-container">
+      {chapterArray.data.map((chapter) => {
+        const dateObj = new Date(chapter.attributes.publishAt);
+        const readableDate = dateObj.toLocaleDateString();
+
+        return (
+          <div className="chapter-block" key={chapter.id}>
+            <p>{chapter.attributes.chapter}</p>
+            <p>{chapter.attributes.title}</p>
+            <p>{readableDate}</p>
+          </div>
+        );
+      })}
+
+      <div className="page-switcher">
+        {Array.from({ length: totalPages }).map((_, index) => (
+          <button key={index} className="page-button">
+            {index + 1}
+          </button>
+        ))}
       </div>
-    );
-  });
+    </div>
+  );
 }
 
 export default function Details() {
@@ -137,6 +154,7 @@ export default function Details() {
           timeout: 5000,
           params: {
             "translatedLanguage[]": "en",
+            limit: 10,
             order: { chapter: "asc" },
           },
           signal: controller.signal,

@@ -324,6 +324,31 @@ header p {
   background-color: hsl(210, 9%, 25%);
 }
 
+.chapter-page-container {
+  padding: 10px 10px 30px 10px;
+  border: 1px solid var(--carbon-black);
+  border-radius: 5px;
+  position: relative;
+}
+
+.page-switcher {
+  /* set button height manually so we can aling the center of the button to the border of the page-container */
+  --button-height: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  position: absolute;
+  bottom: calc(var(--button-height) / -2);
+  left: 0;
+  right: 0;
+}
+.page-button {
+  padding: 0 7px;
+  height: var(--button-height);
+  cursor: pointer;
+}
+
 /* animations */
 
 @keyframes fadeIn {
