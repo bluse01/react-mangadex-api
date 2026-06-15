@@ -93,10 +93,12 @@ function RenderChapters({
   chapterArray,
   currentPage,
   pageChpTarget,
+  onSetPage,
 }: {
   chapterArray: ChapterResp;
   currentPage: number;
   pageChpTarget: number;
+  onSetPage: (page: number, totalPages: number) => void;
 }) {
   const totalPages = Math.ceil(chapterArray.total / pageChpTarget);
 
@@ -116,13 +118,33 @@ function RenderChapters({
       })}
 
       <div className="page-switcher">
-        <button className="hardPrevious">{"<<"}</button>
-        <button className="previous">{"<"}</button>
+        <button
+          className="hardPrevious"
+          onClick={() => onSetPage(0, totalPages)}
+        >
+          {"<<"}
+        </button>
+        <button
+          className="previous"
+          onClick={() => onSetPage(currentPage - 1, totalPages)}
+        >
+          {"<"}
+        </button>
         <span>
-          page {currentPage} of {totalPages}
+          page {currentPage + 1} of {totalPages}
         </span>
-        <button className="next">{">"}</button>
-        <button className="hardNext">{">>"}</button>
+        <button
+          className="next"
+          onClick={() => onSetPage(currentPage + 1, totalPages)}
+        >
+          {">"}
+        </button>
+        <button
+          className="hardNext"
+          onClick={() => onSetPage(totalPages - 1, totalPages)}
+        >
+          {">>"}
+        </button>
       </div>
     </div>
   );
@@ -138,6 +160,12 @@ export default function Details() {
   // page Chapter Target, meaing how many chapters should be in a page, this is importent so we know how many pages we need to create
   // so if we have a chapter target = 10 and have total chapters of 43 it will create a total of 5 pages
   const pageChpTarget = 10;
+
+  function setPage(page: number, totalPages: number) {
+    if (totalPages <= page || page < 0) return;
+
+    setCurrentPage(page);
+  }
 
   const baseUrl = "https://api.mangadex.org";
 
@@ -253,6 +281,7 @@ export default function Details() {
               chapterArray={mangaFeed}
               currentPage={currentPage}
               pageChpTarget={pageChpTarget}
+              onSetPage={setPage}
             />
           ) : null}
         </section>
