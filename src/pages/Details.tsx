@@ -89,7 +89,13 @@ function RenderDescription({ manga }: { manga: MangaItem }) {
   return <h3>{description}</h3>;
 }
 
-function RenderChapters({ chapterArray }: { chapterArray: ChapterResp }) {
+function RenderChapters({
+  chapterArray,
+  currentPage,
+}: {
+  chapterArray: ChapterResp;
+  currentPage: number;
+}) {
   // page Chapter Target, meaing how many chapters should be in a page, this is importent so we know how many pages we need to create
   // so if we have a target = 10 and have total chapters of 43 it will create a total of 5 pages
   const pageChpTarget = 10;
@@ -111,11 +117,13 @@ function RenderChapters({ chapterArray }: { chapterArray: ChapterResp }) {
       })}
 
       <div className="page-switcher">
-        {Array.from({ length: totalPages }).map((_, index) => (
-          <button key={index} className="page-button">
-            {index + 1}
-          </button>
-        ))}
+        <button className="hardPrevious">{"<<"}</button>
+        <button className="previous">{"<"}</button>
+        <span>
+          page {currentPage} of {totalPages}
+        </span>
+        <button className="next">{">"}</button>
+        <button className="hardNext">{">>"}</button>
       </div>
     </div>
   );
@@ -126,6 +134,7 @@ export default function Details() {
   const [mangaInfo, setMangaInfo] = useState<MangaItem>();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const baseUrl = "https://api.mangadex.org";
 
@@ -134,12 +143,12 @@ export default function Details() {
   useEffect(() => {
     const controller = new AbortController();
 
-    async function fetchFeed() {
+    async function fetchMangaInfo() {
       setIsLoading(true);
       setError(null);
 
       try {
-        const titleResponse = await axios.get(
+        const mangaInfoResponse = await axios.get(
           `https://api.mangadex.org/manga/${id}`,
           {
             timeout: 5000,
@@ -150,6 +159,29 @@ export default function Details() {
           },
         );
 
+        setMangaInfo(mangaInfoResponse.data.data);
+      } catch (err) {
+        if (axios.isCancel(err)) {
+          console.log("Request canceled because user clicked something new!");
+        } else {
+          setError("Failed to fetch mangas. Please try again.");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchMangaInfo();
+
+    return () => {
+      controller.abort();
+    };
+  }, [id]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchMangaFeed() {
+      try {
         const feedResponse = await axios.get(`${baseUrl}/manga/${id}/feed`, {
           timeout: 5000,
           params: {
@@ -161,7 +193,6 @@ export default function Details() {
         });
 
         setMangaFeed(feedResponse.data);
-        setMangaInfo(titleResponse.data.data);
       } catch (err) {
         if (axios.isCancel(err)) {
           console.log("Request canceled because user clicked something new!");
@@ -172,13 +203,12 @@ export default function Details() {
         setIsLoading(false);
       }
     }
-
-    fetchFeed();
+    fetchMangaFeed();
 
     return () => {
       controller.abort();
     };
-  }, [id]);
+  }, [id, currentPage]);
 
   console.log(mangaFeed);
   console.log(mangaInfo);
@@ -213,7 +243,12 @@ export default function Details() {
         </div>
 
         <section className="chapter-feed-container">
-          {mangaFeed ? <RenderChapters chapterArray={mangaFeed} /> : null}
+          {mangaFeed ? (
+            <RenderChapters
+              chapterArray={mangaFeed}
+              currentPage={currentPage}
+            />
+          ) : null}
         </section>
       </div>
 
