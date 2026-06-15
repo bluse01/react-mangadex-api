@@ -92,13 +92,12 @@ function RenderDescription({ manga }: { manga: MangaItem }) {
 function RenderChapters({
   chapterArray,
   currentPage,
+  pageChpTarget,
 }: {
   chapterArray: ChapterResp;
   currentPage: number;
+  pageChpTarget: number;
 }) {
-  // page Chapter Target, meaing how many chapters should be in a page, this is importent so we know how many pages we need to create
-  // so if we have a target = 10 and have total chapters of 43 it will create a total of 5 pages
-  const pageChpTarget = 10;
   const totalPages = Math.ceil(chapterArray.total / pageChpTarget);
 
   return (
@@ -135,6 +134,10 @@ export default function Details() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+
+  // page Chapter Target, meaing how many chapters should be in a page, this is importent so we know how many pages we need to create
+  // so if we have a chapter target = 10 and have total chapters of 43 it will create a total of 5 pages
+  const pageChpTarget = 10;
 
   const baseUrl = "https://api.mangadex.org";
 
@@ -187,6 +190,8 @@ export default function Details() {
           params: {
             "translatedLanguage[]": "en",
             limit: 10,
+            // calc the offset we need to display the correct chapters on the next page
+            offset: currentPage * pageChpTarget,
             order: { chapter: "asc" },
           },
           signal: controller.signal,
@@ -247,6 +252,7 @@ export default function Details() {
             <RenderChapters
               chapterArray={mangaFeed}
               currentPage={currentPage}
+              pageChpTarget={pageChpTarget}
             />
           ) : null}
         </section>
