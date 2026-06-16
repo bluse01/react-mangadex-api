@@ -115,7 +115,21 @@ function RenderChapters({
     <div className="chapter-page-container">
       {chapterArray.data.map((chapter) => {
         const dateObj = new Date(chapter.attributes.publishAt);
-        const readableDate = formatDistanceToNowStrict(dateObj);
+        const rawTime = formatDistanceToNowStrict(dateObj);
+
+        const readableDate = rawTime
+          .replace(" seconds", "s")
+          .replace(" second", "s")
+          .replace(" minutes", "m")
+          .replace(" minute", "m")
+          .replace(" hours", "h")
+          .replace(" hour", "h")
+          .replace(" days", "d")
+          .replace(" day", "d")
+          .replace(" months", "mo")
+          .replace(" month", "mo")
+          .replace(" years", "y")
+          .replace(" year", "y");
 
         const scanlationGroup = chapter.relationships.find(
           (rel) => rel.type === "scanlation_group",
@@ -134,7 +148,7 @@ function RenderChapters({
                 )}
                 {scanlationGroup?.attributes.name}
               </p>
-              <p>ago {readableDate}</p>
+              <p>{readableDate} ago</p>
             </div>
           </div>
         );
