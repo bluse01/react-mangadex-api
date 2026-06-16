@@ -79,9 +79,11 @@ export default function MangaList({
         ) : null}
       </div>
 
-      <button className="load-more" onClick={() => onLoadMore(mangaID.total)}>
-        Load more
-      </button>
+      {!isLoading && !error && mangaID ? (
+        <button className="load-more" onClick={() => onLoadMore(mangaID.total)}>
+          Load more
+        </button>
+      ) : null}
     </div>
   );
 }
