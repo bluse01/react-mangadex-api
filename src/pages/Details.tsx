@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { formatDistanceToNowStrict } from "date-fns";
 
 import Header from "../components/Header";
 
@@ -42,6 +43,13 @@ interface MangaItem {
   };
 }
 
+interface ChapterRelationships {
+  attributes: {
+    name: string;
+  };
+  type: string;
+}
+
 interface ChapterResp {
   data: ChapterInt[];
   total: number;
@@ -53,6 +61,7 @@ interface ChapterInt {
     publishAt: string;
     title: string | null;
   };
+  relationships: ChapterRelationships[];
 }
 
 function RenderCover({ manga }: { manga: MangaItem }) {
@@ -106,13 +115,27 @@ function RenderChapters({
     <div className="chapter-page-container">
       {chapterArray.data.map((chapter) => {
         const dateObj = new Date(chapter.attributes.publishAt);
-        const readableDate = dateObj.toLocaleDateString();
+        const readableDate = formatDistanceToNowStrict(dateObj);
+
+        const scanlationGroup = chapter.relationships.find(
+          (rel) => rel.type === "scanlation_group",
+        );
 
         return (
           <div className="chapter-block" key={chapter.id}>
-            <p>{chapter.attributes.chapter}</p>
-            <p>{chapter.attributes.title}</p>
-            <p>{readableDate}</p>
+            <div>
+              <p>{chapter.attributes.chapter}</p>
+              <p className="chapter-block-title">{chapter.attributes.title}</p>
+            </div>
+            <div>
+              <p>
+                {scanlationGroup?.attributes.name && (
+                  <i className="fa-solid fa-users"></i>
+                )}
+                {scanlationGroup?.attributes.name}
+              </p>
+              <p>ago {readableDate}</p>
+            </div>
           </div>
         );
       })}
@@ -130,9 +153,9 @@ function RenderChapters({
         >
           {"<"}
         </button>
-        <span>
-          page {currentPage + 1} of {totalPages}
-        </span>
+        <p>
+          page <span>{currentPage + 1}</span> of {totalPages}
+        </p>
         <button
           className="next"
           onClick={() => onSetPage(currentPage + 1, totalPages)}
@@ -217,6 +240,7 @@ export default function Details() {
           timeout: 5000,
           params: {
             "translatedLanguage[]": "en",
+            "includes[]": "scanlation_group",
             limit: 10,
             // calc the offset we need to display the correct chapters on the next page
             offset: currentPage * pageChpTarget,
