@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 interface MangaListProps {
   isLoading: boolean;
   error: string | null;
-  mangaID: MangaItem[] | null;
+  mangaID: DataMangaItem;
+  onLoadMore: (total: number) => void;
 }
 
 interface Relationships {
@@ -24,8 +25,13 @@ interface MangaItem {
   };
 }
 
+interface DataMangaItem {
+  data: MangaItem[];
+  total: number;
+}
+
 interface MangaArray {
-  mangas: MangaItem[];
+  mangas: DataMangaItem;
 }
 
 function MangaCards({ mangas }: MangaArray) {
@@ -33,7 +39,7 @@ function MangaCards({ mangas }: MangaArray) {
 
   return (
     <>
-      {mangas.map((manga) => {
+      {mangas.data.map((manga) => {
         const coverArt = manga.relationships?.find(
           (rel) => rel.type === "cover_art",
         );
@@ -63,6 +69,7 @@ export default function MangaList({
   isLoading,
   error,
   mangaID,
+  onLoadMore,
 }: MangaListProps) {
   return (
     <div className="manga-container">
@@ -71,6 +78,10 @@ export default function MangaList({
           <MangaCards mangas={mangaID} />
         ) : null}
       </div>
+
+      <button className="load-more" onClick={() => onLoadMore(mangaID.total)}>
+        Load more
+      </button>
     </div>
   );
 }

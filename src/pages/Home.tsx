@@ -28,16 +28,29 @@ interface MangaItem {
   };
 }
 
+interface DataMangaItem {
+  data: MangaItem[];
+  total: number;
+}
+
 export default function Home() {
-  const [mangaID, setMangaID] = useState<MangaItem[] | null>(null);
+  const [mangaID, setMangaID] = useState<DataMangaItem>();
   const [title, setTitle] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [offset, setOffset] = useState(0);
 
   const baseUrl = "https://api.mangadex.org";
 
   function handleSearch(mangaTitle: string) {
     setTitle(mangaTitle);
+  }
+
+  function loadMore(total: number) {
+    const offsetCalc = offset + 10;
+    if (offsetCalc > total) return;
+
+    setOffset(offsetCalc);
   }
 
   useEffect(() => {
@@ -52,13 +65,15 @@ export default function Home() {
           timeout: 5000,
           params: {
             title: title,
+            limit: 10,
+            offset: offset,
             "includes[]": "cover_art",
           },
           signal: controller.signal,
         });
 
-        console.log(response.data.data);
-        setMangaID(response.data.data);
+        console.log(response.data);
+        setMangaID(response.data);
       } catch (err) {
         if (axios.isCancel(err)) {
           console.log("Request canceled because user typed something new!");
@@ -75,7 +90,7 @@ export default function Home() {
     return () => {
       controller.abort();
     };
-  }, [title]);
+  }, [title, offset]);
 
   return (
     <div className="container">
@@ -86,9 +101,18 @@ export default function Home() {
       {isLoading ? <LoadingState /> : null}
       {error ? <ErrorState error={error} /> : null}
 
-      <MangaList isLoading={isLoading} error={error} mangaID={mangaID} />
+      {mangaID ? (
+        <MangaList
+          isLoading={isLoading}
+          error={error}
+          mangaID={mangaID}
+          onLoadMore={loadMore}
+        />
+      ) : null}
 
-      {!isLoading && mangaID && mangaID?.length === 0 && <RenderEmptyState />}
+      {!isLoading && mangaID && mangaID.data.length === 0 && (
+        <RenderEmptyState />
+      )}
     </div>
   );
 }
