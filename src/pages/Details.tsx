@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { formatDistanceToNowStrict } from "date-fns";
 
 import Header from "../components/Header";
+import PageSwitcher from "../components/PageSwitcher";
 
 // state imports
 import LoadingState from "../components/states/LoadingState";
@@ -107,7 +108,7 @@ function RenderChapters({
   chapterArray: ChapterResp;
   currentPage: number;
   pageChpTarget: number;
-  onSetPage: (page: number, totalPages: number) => void;
+  onSetPage: (current: number, total: number) => void;
 }) {
   const totalPages = Math.ceil(chapterArray.total / pageChpTarget);
 
@@ -154,35 +155,11 @@ function RenderChapters({
         );
       })}
 
-      <div className="page-switcher">
-        <button
-          className="hardPrevious"
-          onClick={() => onSetPage(0, totalPages)}
-        >
-          {"<<"}
-        </button>
-        <button
-          className="previous"
-          onClick={() => onSetPage(currentPage - 1, totalPages)}
-        >
-          {"<"}
-        </button>
-        <p>
-          page <span>{currentPage + 1}</span> of {totalPages}
-        </p>
-        <button
-          className="next"
-          onClick={() => onSetPage(currentPage + 1, totalPages)}
-        >
-          {">"}
-        </button>
-        <button
-          className="hardNext"
-          onClick={() => onSetPage(totalPages - 1, totalPages)}
-        >
-          {">>"}
-        </button>
-      </div>
+      <PageSwitcher
+        total={totalPages}
+        current={currentPage}
+        onSetPage={onSetPage}
+      />
     </div>
   );
 }
