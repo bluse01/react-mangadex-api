@@ -126,7 +126,7 @@ function RenderChapters({
           .replace(" hour", "h")
           .replace(" days", "d")
           .replace(" day", "d")
-          .replace(" months", "mo")
+          .replace(" months", "mos")
           .replace(" month", "mo")
           .replace(" years", "y")
           .replace(" year", "y");
