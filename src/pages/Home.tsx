@@ -38,7 +38,10 @@ export default function Home() {
   const [title, setTitle] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [offset, setOffset] = useState(0);
+  const [CurrentPage, setCurrentPage] = useState(0);
+
+  // why this matters is expalin in PageSwitcher.tsx component
+  const pageChpTarget = 10;
 
   const baseUrl = "https://api.mangadex.org";
 
@@ -46,11 +49,10 @@ export default function Home() {
     setTitle(mangaTitle);
   }
 
-  function loadMore(total: number) {
-    const offsetCalc = offset + 10;
-    if (offsetCalc > total) return;
+  function setPage(current: number, total: number) {
+    if (total <= current || current < 0) return;
 
-    setOffset(offsetCalc);
+    setCurrentPage(current);
   }
 
   useEffect(() => {
@@ -66,7 +68,7 @@ export default function Home() {
           params: {
             title: title,
             limit: 10,
-            offset: offset,
+            offset: CurrentPage * pageChpTarget,
             "includes[]": "cover_art",
           },
           signal: controller.signal,
@@ -90,7 +92,7 @@ export default function Home() {
     return () => {
       controller.abort();
     };
-  }, [title, offset]);
+  }, [title, CurrentPage]);
 
   return (
     <div className="container">
@@ -106,7 +108,10 @@ export default function Home() {
           isLoading={isLoading}
           error={error}
           mangaID={mangaID}
-          onLoadMore={loadMore}
+          contentTarget={pageChpTarget}
+          total={mangaID.total}
+          current={CurrentPage}
+          onSetPage={setPage}
         />
       ) : null}
 

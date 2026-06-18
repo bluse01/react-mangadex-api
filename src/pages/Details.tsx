@@ -110,8 +110,6 @@ function RenderChapters({
   pageChpTarget: number;
   onSetPage: (current: number, total: number) => void;
 }) {
-  const totalPages = Math.ceil(chapterArray.total / pageChpTarget);
-
   return (
     <div className="chapter-page-container">
       {chapterArray.data.map((chapter) => {
@@ -156,7 +154,8 @@ function RenderChapters({
       })}
 
       <PageSwitcher
-        total={totalPages}
+        totalContent={chapterArray.total}
+        contentTarget={pageChpTarget}
         current={currentPage}
         onSetPage={onSetPage}
       />
@@ -171,14 +170,13 @@ export default function Details() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
 
-  // page Chapter Target, meaing how many chapters should be in a page, this is importent so we know how many pages we need to create
-  // so if we have a chapter target = 10 and have total chapters of 43 it will create a total of 5 pages
+  // why this matters is expalin in PageSwitcher.tsx component
   const pageChpTarget = 10;
 
-  function setPage(page: number, totalPages: number) {
-    if (totalPages <= page || page < 0) return;
+  function setPage(current: number, total: number) {
+    if (total <= current || current < 0) return;
 
-    setCurrentPage(page);
+    setCurrentPage(current);
   }
 
   const baseUrl = "https://api.mangadex.org";

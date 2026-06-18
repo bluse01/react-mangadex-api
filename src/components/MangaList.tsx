@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
+import PageSwitcher from "./PageSwitcher";
 
 interface MangaListProps {
   isLoading: boolean;
   error: string | null;
   mangaID: DataMangaItem;
-  onLoadMore: (total: number) => void;
+  contentTarget: number;
+  total: number;
+  current: number;
+  onSetPage: (current: number, total: number) => void;
 }
 
 interface Relationships {
@@ -69,7 +73,10 @@ export default function MangaList({
   isLoading,
   error,
   mangaID,
-  onLoadMore,
+  contentTarget,
+  total,
+  current,
+  onSetPage,
 }: MangaListProps) {
   return (
     <div className="manga-container">
@@ -80,9 +87,12 @@ export default function MangaList({
       </div>
 
       {!isLoading && !error && mangaID ? (
-        <button className="load-more" onClick={() => onLoadMore(mangaID.total)}>
-          Load more
-        </button>
+        <PageSwitcher
+          totalContent={total}
+          contentTarget={contentTarget}
+          current={current}
+          onSetPage={onSetPage}
+        />
       ) : null}
     </div>
   );
