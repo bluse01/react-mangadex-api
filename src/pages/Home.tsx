@@ -61,6 +61,7 @@ export default function Home() {
     const mangaFetch = async () => {
       setIsLoading(true);
       setError(null);
+      setCurrentPage(0);
 
       try {
         const response = await axios.get(`${baseUrl}/manga`, {
