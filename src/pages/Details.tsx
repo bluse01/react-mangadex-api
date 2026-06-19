@@ -153,12 +153,16 @@ function RenderChapters({
         );
       })}
 
-      <PageSwitcher
-        totalContent={chapterArray.total}
-        contentTarget={pageChpTarget}
-        current={currentPage}
-        onSetPage={onSetPage}
-      />
+      {chapterArray.data.length > 0 ? (
+        <PageSwitcher
+          totalContent={chapterArray.total}
+          contentTarget={pageChpTarget}
+          current={currentPage}
+          onSetPage={onSetPage}
+        />
+      ) : (
+        <RenderEmptyState />
+      )}
     </div>
   );
 }

@@ -86,7 +86,7 @@ export default function MangaList({
         ) : null}
       </div>
 
-      {!isLoading && !error && mangaID ? (
+      {!isLoading && !error && mangaID.data.length > 0 && mangaID ? (
         <PageSwitcher
           totalContent={total}
           contentTarget={contentTarget}
