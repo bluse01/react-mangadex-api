@@ -59,7 +59,7 @@ function MangaCards({ mangas }: MangaArray) {
         return (
           <Link to={`/manga/${manga.id}`} key={manga.id}>
             <div className="manga-card">
-              <img src={imgScr} alt="cover_art" />
+              <img src={imgScr} loading="lazy" alt="cover_art" />
               <h3>{mainTitle ? mainTitle : "Unkown Title"}</h3>
             </div>
           </Link>
