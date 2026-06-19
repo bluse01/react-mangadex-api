@@ -406,6 +406,13 @@ header p {
   margin-right: 5px;
 }
 
+/* Link */
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* animations */
 
 @keyframes fadeIn {
