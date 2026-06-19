@@ -38,7 +38,7 @@ export default function Home() {
   const [title, setTitle] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [CurrentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [mangaCache, setMangaCache] = useState<{
     [page: number]: DataMangaItem;
   }>({});
@@ -61,9 +61,9 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const checkCache = async () => setMangaID(mangaCache[CurrentPage]);
+    const checkCache = async () => setMangaID(mangaCache[currentPage]);
 
-    if (mangaCache[CurrentPage]) {
+    if (mangaCache[currentPage]) {
       checkCache();
       return;
     }
@@ -80,7 +80,7 @@ export default function Home() {
           params: {
             title: title,
             limit: pageChpTarget,
-            offset: CurrentPage * pageChpTarget,
+            offset: currentPage * pageChpTarget,
             "includes[]": "cover_art",
           },
           signal: controller.signal,
@@ -90,7 +90,7 @@ export default function Home() {
         setMangaID(response.data);
         setMangaCache((prev) => ({
           ...prev,
-          [CurrentPage]: response.data,
+          [currentPage]: response.data,
         }));
       } catch (err) {
         if (axios.isCancel(err)) {
@@ -108,7 +108,7 @@ export default function Home() {
     return () => {
       controller.abort();
     };
-  }, [title, CurrentPage, mangaCache]);
+  }, [title, currentPage, mangaCache]);
 
   console.log("cache", mangaCache);
   return (
@@ -127,7 +127,7 @@ export default function Home() {
           mangaID={mangaID}
           contentTarget={pageChpTarget}
           total={mangaID.total}
-          current={CurrentPage}
+          current={currentPage}
           onSetPage={setPage}
         />
       ) : null}

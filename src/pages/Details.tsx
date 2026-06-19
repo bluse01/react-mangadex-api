@@ -173,6 +173,9 @@ export default function Details() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [mangaCache, setMangaCache] = useState<{
+    [page: number]: ChapterResp;
+  }>({});
 
   // why this matters is expalin in PageSwitcher.tsx component
   const pageChpTarget = 10;
@@ -187,6 +190,7 @@ export default function Details() {
 
   const { id } = useParams();
 
+  // manga info title tags etc...
   useEffect(() => {
     const controller = new AbortController();
 
@@ -224,7 +228,15 @@ export default function Details() {
     };
   }, [id]);
 
+  // manga feed/chapter fetch
   useEffect(() => {
+    const checkCache = async () => setMangaFeed(mangaCache[currentPage]);
+
+    if (mangaCache[currentPage]) {
+      checkCache();
+      return;
+    }
+
     const controller = new AbortController();
 
     async function fetchMangaFeed() {
@@ -243,6 +255,10 @@ export default function Details() {
         });
 
         setMangaFeed(feedResponse.data);
+        setMangaCache((prev) => ({
+          ...prev,
+          [currentPage]: feedResponse.data,
+        }));
       } catch (err) {
         if (axios.isCancel(err)) {
           console.log("Request canceled because user clicked something new!");
@@ -258,11 +274,12 @@ export default function Details() {
     return () => {
       controller.abort();
     };
-  }, [id, currentPage]);
+  }, [id, currentPage, mangaCache]);
 
   console.log(mangaFeed);
   console.log(mangaInfo);
 
+  console.log("cacheFeed", mangaCache);
   return (
     <div className="container ">
       <Header />
