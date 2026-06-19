@@ -74,6 +74,10 @@ header p {
 
 /* header */
 
+.container {
+  margin-bottom: 30px;
+}
+
 /* search - input */
 
 .search-container form {
@@ -175,6 +179,7 @@ header p {
   gap: 20px;
   padding: 0 10px;
   width: 70%;
+  max-width: 1200px;
 }
 
 .manga-card-wrapper div {
@@ -369,16 +374,11 @@ header p {
 }
 
 .page-switcher {
-  /* set button height manually so we can aling the center of the button to the border of the page-container */
   --button-height: 28px;
   display: flex;
   justify-content: center;
   gap: 10px;
-
-  position: absolute;
-  bottom: calc(var(--button-height) / -2);
-  left: 0;
-  right: 0;
+  margin-top: 20px;
 }
 .page-switcher button {
   padding: 0 8px;

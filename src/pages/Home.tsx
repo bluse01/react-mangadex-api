@@ -41,12 +41,13 @@ export default function Home() {
   const [CurrentPage, setCurrentPage] = useState(0);
 
   // why this matters is expalin in PageSwitcher.tsx component
-  const pageChpTarget = 10;
+  const pageChpTarget = 15;
 
   const baseUrl = "https://api.mangadex.org";
 
   function handleSearch(mangaTitle: string) {
     setTitle(mangaTitle);
+    setCurrentPage(0);
   }
 
   function setPage(current: number, total: number) {
@@ -61,14 +62,13 @@ export default function Home() {
     const mangaFetch = async () => {
       setIsLoading(true);
       setError(null);
-      setCurrentPage(0);
 
       try {
         const response = await axios.get(`${baseUrl}/manga`, {
           timeout: 5000,
           params: {
             title: title,
-            limit: 10,
+            limit: pageChpTarget,
             offset: CurrentPage * pageChpTarget,
             "includes[]": "cover_art",
           },

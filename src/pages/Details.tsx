@@ -230,7 +230,7 @@ export default function Details() {
           params: {
             "translatedLanguage[]": "en",
             "includes[]": "scanlation_group",
-            limit: 10,
+            limit: pageChpTarget,
             // calc the offset we need to display the correct chapters on the next page
             offset: currentPage * pageChpTarget,
             order: { chapter: "asc" },
