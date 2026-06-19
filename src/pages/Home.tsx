@@ -39,6 +39,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [CurrentPage, setCurrentPage] = useState(0);
+  const [mangaCache, setMangaCache] = useState<{
+    [page: number]: DataMangaItem;
+  }>({});
 
   // why this matters is expalin in PageSwitcher.tsx component
   const pageChpTarget = 15;
@@ -48,6 +51,7 @@ export default function Home() {
   function handleSearch(mangaTitle: string) {
     setTitle(mangaTitle);
     setCurrentPage(0);
+    setMangaCache({});
   }
 
   function setPage(current: number, total: number) {
@@ -57,6 +61,13 @@ export default function Home() {
   }
 
   useEffect(() => {
+    const checkCache = async () => setMangaID(mangaCache[CurrentPage]);
+
+    if (mangaCache[CurrentPage]) {
+      checkCache();
+      return;
+    }
+
     const controller = new AbortController();
 
     const mangaFetch = async () => {
@@ -77,6 +88,10 @@ export default function Home() {
 
         console.log(response.data);
         setMangaID(response.data);
+        setMangaCache((prev) => ({
+          ...prev,
+          [CurrentPage]: response.data,
+        }));
       } catch (err) {
         if (axios.isCancel(err)) {
           console.log("Request canceled because user typed something new!");
@@ -93,8 +108,9 @@ export default function Home() {
     return () => {
       controller.abort();
     };
-  }, [title, CurrentPage]);
+  }, [title, CurrentPage, mangaCache]);
 
+  console.log("cache", mangaCache);
   return (
     <div className="container">
       <Header />
