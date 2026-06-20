@@ -34,7 +34,6 @@ interface DataMangaItem {
 }
 
 export default function Home() {
-  const [mangaID, setMangaID] = useState<DataMangaItem>();
   const [title, setTitle] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +46,8 @@ export default function Home() {
   const pageChpTarget = 15;
 
   const baseUrl = "https://api.mangadex.org";
+
+  const mangaData = mangaCache[currentPage];
 
   function handleSearch(mangaTitle: string) {
     setTitle(mangaTitle);
@@ -61,12 +62,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    const checkCache = async () => setMangaID(mangaCache[currentPage]);
-
-    if (mangaCache[currentPage]) {
-      checkCache();
-      return;
-    }
+    if (mangaCache[currentPage]) return;
 
     const controller = new AbortController();
 
@@ -87,7 +83,6 @@ export default function Home() {
         });
 
         console.log(response.data);
-        setMangaID(response.data);
         setMangaCache((prev) => ({
           ...prev,
           [currentPage]: response.data,
@@ -120,19 +115,19 @@ export default function Home() {
       {isLoading ? <LoadingState /> : null}
       {error ? <ErrorState error={error} /> : null}
 
-      {mangaID ? (
+      {mangaData ? (
         <MangaList
           isLoading={isLoading}
           error={error}
-          mangaID={mangaID}
+          mangaID={mangaData}
           contentTarget={pageChpTarget}
-          total={mangaID.total}
+          total={mangaData.total}
           current={currentPage}
           onSetPage={setPage}
         />
       ) : null}
 
-      {!isLoading && mangaID && mangaID.data.length === 0 && (
+      {!isLoading && mangaData && mangaData.data.length === 0 && (
         <RenderEmptyState />
       )}
     </div>
