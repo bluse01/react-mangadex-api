@@ -170,7 +170,8 @@ function RenderChapters({
 export default function Details() {
   const [mangaInfo, setMangaInfo] = useState<MangaItem>();
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isInfoLoading, setIsInfoLoading] = useState(false);
+  const [isFeedLoading, setIsFeedLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [mangaCache, setMangaCache] = useState<{
     [page: number]: ChapterResp;
@@ -196,7 +197,7 @@ export default function Details() {
     const controller = new AbortController();
 
     async function fetchMangaInfo() {
-      setIsLoading(true);
+      setIsInfoLoading(true);
       setError(null);
 
       try {
@@ -219,7 +220,7 @@ export default function Details() {
           setError("Failed to fetch mangas. Please try again.");
         }
       } finally {
-        setIsLoading(false);
+        setIsInfoLoading(false);
       }
     }
     fetchMangaInfo();
@@ -236,6 +237,8 @@ export default function Details() {
     const controller = new AbortController();
 
     async function fetchMangaFeed() {
+      setIsFeedLoading(true);
+
       try {
         const feedResponse = await axios.get(`${baseUrl}/manga/${id}/feed`, {
           timeout: 5000,
@@ -261,7 +264,7 @@ export default function Details() {
           setError("Failed to fetch mangas. Please try again.");
         }
       } finally {
-        setIsLoading(false);
+        setIsFeedLoading(false);
       }
     }
     fetchMangaFeed();
@@ -279,7 +282,7 @@ export default function Details() {
     <div className="container ">
       <Header />
 
-      {isLoading ? <LoadingState /> : null}
+      {isInfoLoading ? <LoadingState /> : null}
       {error ? <ErrorState error={error} /> : null}
 
       <div className="main-content-container">
@@ -318,9 +321,10 @@ export default function Details() {
         </section>
       </div>
 
-      {!isLoading && mangaInfo && Object.keys(mangaInfo).length === 0 && (
-        <RenderEmptyState />
-      )}
+      {!isFeedLoading &&
+        !isInfoLoading &&
+        mangaInfo &&
+        Object.keys(mangaInfo).length === 0 && <RenderEmptyState />}
     </div>
   );
 }
