@@ -168,7 +168,6 @@ function RenderChapters({
 }
 
 export default function Details() {
-  const [mangaFeed, setMangaFeed] = useState<ChapterResp>();
   const [mangaInfo, setMangaInfo] = useState<MangaItem>();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -179,6 +178,8 @@ export default function Details() {
 
   // why this matters is expalin in PageSwitcher.tsx component
   const pageChpTarget = 10;
+
+  const mangaFeed = mangaCache[currentPage];
 
   function setPage(current: number, total: number) {
     if (total <= current || current < 0) return;
@@ -230,12 +231,7 @@ export default function Details() {
 
   // manga feed/chapter fetch
   useEffect(() => {
-    const checkCache = async () => setMangaFeed(mangaCache[currentPage]);
-
-    if (mangaCache[currentPage]) {
-      checkCache();
-      return;
-    }
+    if (mangaCache[currentPage]) return;
 
     const controller = new AbortController();
 
@@ -254,7 +250,6 @@ export default function Details() {
           signal: controller.signal,
         });
 
-        setMangaFeed(feedResponse.data);
         setMangaCache((prev) => ({
           ...prev,
           [currentPage]: feedResponse.data,
@@ -317,7 +312,9 @@ export default function Details() {
               pageChpTarget={pageChpTarget}
               onSetPage={setPage}
             />
-          ) : null}
+          ) : (
+            <LoadingState />
+          )}
         </section>
       </div>
 
