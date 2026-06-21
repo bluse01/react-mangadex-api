@@ -312,7 +312,7 @@ header p {
 }
 
 .manga-tags {
-  color: var(--alabaster-grey);
+  color: var(--cotton-candy);
 
   display: flex;
   align-items: center;
@@ -322,7 +322,7 @@ header p {
 }
 
 .head-content-container h3 {
-  color: var(--blush-rose);
+  color: var(--pale-slate);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   line-clamp: 5;
