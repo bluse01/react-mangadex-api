@@ -334,7 +334,7 @@ header p {
   display: flex;
   justify-content: space-between;
   color: var(--bright-snow);
-  background-color: var(--iron-grey);
+  background-color: var(--blush-rose);
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
