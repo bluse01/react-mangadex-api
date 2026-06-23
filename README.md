@@ -8,7 +8,6 @@ This project was built as a learning journey to transition from basic React tuto
 
 - **Manga Search**: Fetch real time data from the MangaDex API.
 - **Instant Navigation**: Uses React Router for seamless, instant transitions between the search page and the manga details page.
-- **Responsive Design**: A UI utilizing CSS Grid (`auto-fill`) and hover animations.
 - **Race Condition Prevention**: Uses `AbortController` inside `useEffect` to handle fast typing and prevent stale state bugs.
 
 ## Technologies Used
